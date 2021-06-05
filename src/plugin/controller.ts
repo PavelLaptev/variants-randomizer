@@ -47,7 +47,7 @@ figma.ui.onmessage = async msg => {
   if (msg.type === "what-to-random") {
     let selection = figma.currentPage.selection;
 
-    console.log(msg.data);
+    // console.log(msg.data);
     // msg.data.forEach(item => {
 
     // });
