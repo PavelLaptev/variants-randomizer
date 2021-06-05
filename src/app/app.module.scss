@@ -1,0 +1,18 @@
+.app {
+  position: relative;
+  overflow-x: hidden;
+  padding: calc(var(--spacer-m) * 2);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  flex: 1;
+  input {
+    font-size: 16px;
+    font-weight: bold;
+  }
+}

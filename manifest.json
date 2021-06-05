@@ -1,0 +1,7 @@
+{
+  "name": "Variants Randomizer",
+  "id": "981938541965949273",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html"
+}
