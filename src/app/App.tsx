@@ -6,64 +6,47 @@ import * as React from "react";
 ///////////////////////////////////////////////
 const App = ({}) => {
   const [variants, setVariants] = React.useState([] as Array<variantsObj>);
-  const [randomizeList, setRandomizeList] = React.useState([] as Array<object>);
+  const [newVariants, setNewVariants] = React.useState(
+    [] as Array<variantsObj>
+  );
 
   //////////////////////////////////////////////
   ////////////////// HANDLERS //////////////////
   //////////////////////////////////////////////
-  const sendRandom = () => {
+  const sendNewVariants = () => {
     parent.postMessage(
       {
         pluginMessage: {
           type: "what-to-random",
-          data: randomizeList
+          data: newVariants
         }
       },
       "*"
     );
   };
 
-  const handleCheckbox = (e, componentName, componentID, variant) => {
-    // console.log(e.target.checked, component, variant);
-    // if (e.target.checked) {
-    //   setRandomizeList([
-    //     ...randomizeList,
-    //     {
-    //       name: componentName,
-    //       id: componentID,
-    //       variant: variant
-    //     }
-    //   ]);
-    // }
+  const handleCheckbox = (e, componentID, variant) => {
+    let variantsClone = variants;
 
     if (e.target.checked) {
-      if (randomizeList.length > 0) {
-        randomizeList.forEach(c => {
-          if (c.id !== componentID) {
-            setRandomizeList([
-              ...randomizeList,
-              {
-                name: componentName,
-                id: componentID,
-                variant: variant
-              }
-            ]);
-
-            console.log(randomizeList);
+      variantsClone.map(item => {
+        if (componentID === item.component.id) {
+          let index = item.variants.indexOf(variant);
+          if (index >= 0) {
+            item.variants.splice(index, 1);
           }
-        });
-      } else {
-        setRandomizeList([
-          {
-            name: componentName,
-            id: componentID,
-            variant: variant
-          }
-        ]);
-      }
+        }
+      });
+    } else {
+      variantsClone.map(item => {
+        if (componentID === item.component.id) {
+          item.variants.push(variant);
+        }
+      });
     }
 
-    // console.log(randomizeList);
+    // console.log(variantsClone);
+    setNewVariants(variantsClone);
   };
 
   //////////////////////////////////////////////
@@ -72,8 +55,9 @@ const App = ({}) => {
   React.useEffect(() => {
     onmessage = event => {
       setVariants(event.data.pluginMessage.data);
+      setNewVariants(event.data.pluginMessage.data);
     };
-  }, [variants]);
+  }, [variants, newVariants]);
 
   //////////////////////////////////////////////
   //////////// COMPONENT FUNCTIONS /////////////
@@ -91,12 +75,7 @@ const App = ({}) => {
                   <label htmlFor={variantKey}>{variant}</label>
                   <input
                     onChange={e =>
-                      handleCheckbox(
-                        e,
-                        item.component.name,
-                        item.component.id,
-                        variant
-                      )
+                      handleCheckbox(e, item.component.id, variant)
                     }
                     id={variantKey}
                     type="checkbox"
@@ -122,7 +101,7 @@ const App = ({}) => {
 
       {addVariants(variants)}
 
-      <button onClick={sendRandom}>Get Stats</button>
+      <button onClick={sendNewVariants}>Get Stats</button>
     </div>
   );
 };

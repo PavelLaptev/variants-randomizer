@@ -25,14 +25,7 @@ variants.forEach(item => {
     component: { name: item.name, id: item.id },
     variants: item.children[0].name
       .split(", ")
-      .map(name => name.substr(0, name.indexOf("="))),
-    children: item.children.map(variant => ({
-      name: variant.name,
-      id: variant.id,
-      properties: variant.name
-        .split(", ")
-        .map(name => name.substr(0, name.indexOf("=")))
-    }))
+      .map(name => name.substr(0, name.indexOf("=")))
   });
 });
 
@@ -47,7 +40,8 @@ figma.ui.onmessage = async msg => {
   if (msg.type === "what-to-random") {
     let selection = figma.currentPage.selection;
 
-    // console.log(msg.data);
+    console.log(msg.data);
+
     // msg.data.forEach(item => {
 
     // });
@@ -79,27 +73,27 @@ figma.ui.onmessage = async msg => {
     //     item.swapComponent(randomElement);
     //   });
 
-      // let filteredVariants = componentVariants.filter(c =>
-      //   c.name.includes(lockedVariant)
-      // );
+    // let filteredVariants = componentVariants.filter(c =>
+    //   c.name.includes(lockedVariant)
+    // );
 
-      // const randomElement =
-      //   filteredVariants[Math.floor(Math.random() * filteredVariants.length)];
+    // const randomElement =
+    //   filteredVariants[Math.floor(Math.random() * filteredVariants.length)];
 
-      // item.swapComponent(randomElement);
+    // item.swapComponent(randomElement);
 
-      // console.log(currentVariant);
-      // }
+    // console.log(currentVariant);
+    // }
 
-      // console.log(item.mainComponent.name.split(currentVariant));
+    // console.log(item.mainComponent.name.split(currentVariant));
 
-      // componentVariants.map(c => {
-      //   let referenz = item.mainComponent.name;
-      //   console.log(c.name, referenz);
-      //   // if (c.name) {
-      //   //   console.log(c.name);
-      //   // }
-      // });
-    });
+    // componentVariants.map(c => {
+    //   let referenz = item.mainComponent.name;
+    //   console.log(c.name, referenz);
+    //   // if (c.name) {
+    //   //   console.log(c.name);
+    //   // }
+    // });
+    // });
   }
 };
