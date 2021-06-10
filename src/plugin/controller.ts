@@ -25,7 +25,12 @@ variants.forEach(item => {
     component: { name: item.name, id: item.id },
     variants: item.children[0].name
       .split(", ")
-      .map(name => name.substr(0, name.indexOf("=")))
+      .map(name => name.substr(0, name.indexOf("="))),
+    children: item.children.map(c => ({
+      name: c.name,
+      variants: c.name.split(", "),
+      id: c.id
+    }))
   });
 });
 
@@ -36,64 +41,84 @@ figma.ui.postMessage({
   data: variantsJSON
 });
 
+function arr_diff(a1, a2) {
+  var a = [],
+    diff = [];
+
+  for (var i = 0; i < a1.length; i++) {
+    a[a1[i]] = true;
+  }
+
+  for (var i = 0; i < a2.length; i++) {
+    if (a[a2[i]]) {
+      delete a[a2[i]];
+    } else {
+      a[a2[i]] = true;
+    }
+  }
+
+  for (var k in a) {
+    diff.push(k);
+  }
+
+  return diff;
+}
+
 figma.ui.onmessage = async msg => {
   if (msg.type === "what-to-random") {
     let selection = figma.currentPage.selection;
 
-    console.log(msg.data);
+    // console.log(arr.variants);
 
-    // msg.data.forEach(item => {
+    selection.forEach(item => {
+      // console.log(
+      //   item.mainComponent.name
+      //     .split(", ")
+      //     .filter(x => x.includes(data.variants))
+      // );
+      let data = msg.data;
 
-    // });
+      let itemVariants = item.mainComponent.name.split(", ");
 
-    // selection.forEach(item => {
-    //   const componentVariants = item.masterComponent.parent.children;
+      data.map(x => {
+        if (x.component.id === item.masterComponent.parent.id) {
+          let ar = itemVariants.map(y => {
+            return x.variants.map(z => {
+              if (y.includes(z)) {
+                return y;
+              }
+            });
+          });
 
-    //   // let currentVariant = msg.data.filter(
-    //   //   c => c.id === item.masterComponent.parent.id
-    //   // );
+          let far = ar.flat().filter(Boolean);
 
-    //   // if (currentVariant) {
-    //   // console.log(currentVariant);
+          // console.log(far);
 
-    //   msg.data.forEach(element => {
-    //     let checkString = item.mainComponent.name
-    //       .split(", ")
-    //       .find(c => c.includes(element.variant));
+          // const componentVariants = item.masterComponent.parent.children.filter(c => c)
 
-    //     let filteredVariants = componentVariants.filter(c =>
-    //       c.name.includes(checkString)
-    //     );
+          let vfar = item.masterComponent.parent.children.filter(c => {
+            let difference = c.name.split(", ").filter(x => far.includes(x));
+            // console.log(difference);
+            if (difference.length === far.length) {
+              console.log(c.name);
+              return c;
+            }
+            // console.log(difference);
+          });
 
-    //     console.log(filteredVariants);
+          // console.log(vfar);
 
-    //     const randomElement =
-    //       filteredVariants[Math.floor(Math.random() * filteredVariants.length)];
+          let randomElement = vfar[Math.floor(Math.random() * vfar.length)];
 
-    //     item.swapComponent(randomElement);
-    //   });
+          item.swapComponent(randomElement);
+          // console.log(fca);
+        }
+      });
 
-    // let filteredVariants = componentVariants.filter(c =>
-    //   c.name.includes(lockedVariant)
-    // );
+      // console.log(,item.masterComponent.parent.id);
+      // itemVariants.map(x => {
 
-    // const randomElement =
-    //   filteredVariants[Math.floor(Math.random() * filteredVariants.length)];
-
-    // item.swapComponent(randomElement);
-
-    // console.log(currentVariant);
-    // }
-
-    // console.log(item.mainComponent.name.split(currentVariant));
-
-    // componentVariants.map(c => {
-    //   let referenz = item.mainComponent.name;
-    //   console.log(c.name, referenz);
-    //   // if (c.name) {
-    //   //   console.log(c.name);
-    //   // }
-    // });
-    // });
+      // })
+    });
   }
 };
