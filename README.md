@@ -1,4 +1,4 @@
-# Figma Auto Layout Styles
+# Variants Randomizer
 
 ![Cover](preview.jpg)
 
