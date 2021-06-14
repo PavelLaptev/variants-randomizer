@@ -1,10 +1,16 @@
 import * as React from "react";
-// import styles from "./app.module.scss";
+import Toggler from "./components/Toggler";
+import Divider from "./components/Divider";
+import Button from "./components/Button";
+import styles from "./app.module.scss";
+
+import svgLogo from "./assets/logo.svg";
 
 ///////////////////////////////////////////////
 ///////////////// APPLICATION /////////////////
 ///////////////////////////////////////////////
 const App = ({}) => {
+  const containerRef = React.useRef(null);
   const [variants, setVariants] = React.useState([] as Array<variantsObj>);
   const [newVariants, setNewVariants] = React.useState(
     [] as Array<variantsObj>
@@ -31,21 +37,20 @@ const App = ({}) => {
     if (e.target.checked) {
       variantsClone.map(item => {
         if (componentID === item.component.id) {
-          let index = item.variants.indexOf(variant);
+          let index = item.selectedVariants.indexOf(variant);
           if (index >= 0) {
-            item.variants.splice(index, 1);
+            item.selectedVariants.splice(index, 1);
           }
         }
       });
     } else {
       variantsClone.map(item => {
         if (componentID === item.component.id) {
-          item.variants.push(variant);
+          item.selectedVariants.push(variant);
         }
       });
     }
 
-    // console.log(variantsClone);
     setNewVariants(variantsClone);
   };
 
@@ -54,8 +59,10 @@ const App = ({}) => {
   //////////////////////////////////////////////
   React.useEffect(() => {
     onmessage = event => {
-      setVariants(event.data.pluginMessage.data);
-      setNewVariants(event.data.pluginMessage.data);
+      if (event.data.pluginMessage.type === "variants") {
+        setVariants(event.data.pluginMessage.data);
+        setNewVariants(event.data.pluginMessage.data);
+      }
     };
   }, [variants, newVariants]);
 
@@ -63,32 +70,31 @@ const App = ({}) => {
   //////////// COMPONENT FUNCTIONS /////////////
   //////////////////////////////////////////////
   const addVariants = (variants: Array<variantsObj>) => {
-    if (variants.length > 0) {
-      return variants.map((item, i) => {
-        return (
-          <div key={`component-${i}`}>
-            <h3>{item.component.name}</h3>
-            {item.variants.map((variant, j) => {
-              let variantKey = `variant-${i}-${j}`;
-              return (
-                <div key={variantKey}>
-                  <label htmlFor={variantKey}>{variant}</label>
-                  <input
-                    onChange={e =>
-                      handleCheckbox(e, item.component.id, variant)
-                    }
-                    id={variantKey}
-                    type="checkbox"
-                  />
-                </div>
-              );
-            })}
-          </div>
-        );
-      });
-    } else {
-      return <div>please select something</div>;
-    }
+    return variants.map((item, i) => {
+      // console.log(i);
+      return (
+        <div
+          ref={containerRef}
+          className={styles.variant}
+          key={`component-${i}`}
+        >
+          <Divider />
+          <h3>{item.component.name}</h3>
+          {item.variants.map((variant, j) => {
+            let variantKey = `variant-${i}-${j}`;
+            return (
+              <Toggler
+                checked={true}
+                key={variantKey}
+                togglerKey={variantKey}
+                name={variant}
+                onChange={e => handleCheckbox(e, item.component.id, variant)}
+              />
+            );
+          })}
+        </div>
+      );
+    });
   };
 
   //////////////////////////////////////////////
@@ -96,13 +102,27 @@ const App = ({}) => {
   //////////////////////////////////////////////
 
   return (
-    <div>
-      <h1>Hello Stats!</h1>
+    <section className={styles.app}>
+      {variants.length > 0 ? (
+        <>
+          <div>
+            <p className={styles.caption}>
+              Unselect variants that you don't want to randomize 👇
+            </p>
+            <div className={styles.variantsWrap}>{addVariants(variants)}</div>
+          </div>
 
-      {addVariants(variants)}
-
-      <button onClick={sendNewVariants}>Get Stats</button>
-    </div>
+          <Button onClick={sendNewVariants} label="Randomize!" />
+        </>
+      ) : (
+        <section className={styles.emptyState}>
+          <div className={styles.emptyState_placeholder}>
+            <img src={svgLogo} />
+            <h3>Select variant instances …</h3>
+          </div>
+        </section>
+      )}
+    </section>
   );
 };
 

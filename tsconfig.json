@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "es2015",
+    "lib": ["dom", "esnext"],
     "outDir": "dist",
     "jsx": "react",
     "noUnusedLocals": true,
@@ -12,11 +13,9 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "typeRoots": [
-      "./node_modules/@types",
-      "./node_modules/@figma",
-      "./node_modules/@figma/plugin-typings",
-      "./configProps.d.ts",
-      "./declaration.d.ts"
+      "types/figma.d.ts",
+      "types/global.d.ts",
+      "types/declaration.d.ts"
     ]
   }
 }

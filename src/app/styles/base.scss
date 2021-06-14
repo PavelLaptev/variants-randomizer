@@ -1,21 +1,13 @@
 @import "./font-face";
 
 :root {
-  //
-  --white-clr: #fff;
-  --light-clr: #eff2f3;
-  --middle-clr: #e2e5e5;
-  --semi-dark-clr: #c5ced1;
-  --dark-clr: #353738;
-  //
-  --radius-s: 4px;
-  --radius-m: 8px;
-  --radius-l: 20px;
-  //
-  --spacer-s: 4px;
-  --spacer-m: 8px;
-  --spacer-l: 16px;
-  --spacer-xl: 24px;
+  // colors
+  --light-clr: #fff;
+  --light-dark-clr: rgb(223, 223, 223);
+  --dark-clr: #272727;
+  --op-04-clr: rgba(255, 255, 255, 0.06);
+  --accent-clr: #ffffff;
+  --accent-hover: #f5ff64;
 }
 
 *,
@@ -28,13 +20,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-// *::selection {
-//   color: var(--white-clr);
-//   background-color: var(--dark-clr);
-// }
-
 body {
   font-family: "Inter", sans-serif;
   font-size: 12px;
   margin: 0;
+  padding: 16px;
+  background: var(--dark-clr);
+  &::-webkit-scrollbar {
+    width: 0; /* Remove scrollbar space */
+    background: transparent; /* Optional: just make scrollbar invisible */
+  }
 }

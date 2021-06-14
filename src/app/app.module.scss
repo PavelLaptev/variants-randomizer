@@ -1,18 +1,53 @@
 .app {
-  position: relative;
-  overflow-x: hidden;
-  padding: calc(var(--spacer-m) * 2);
-}
-
-.header {
+  width: 100%;
+  min-height: 100%;
+  color: var(--light-clr);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.title {
+.caption {
+  font-weight: 400;
+  opacity: 0.7;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.variantsWrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.emptyState {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  input {
-    font-size: 16px;
-    font-weight: bold;
+  align-items: center;
+  justify-content: center;
+  &_placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 180px;
+    img {
+      width: 32px;
+    }
+    h3 {
+      font-size: 16px;
+      font-weight: 900;
+      text-align: center;
+    }
+  }
+}
+
+.variant {
+  margin-bottom: 12px;
+  h3 {
+    font-size: 15px;
+    font-weight: 900;
+    margin-top: 0;
+    margin-bottom: 12px;
   }
 }

@@ -2,15 +2,6 @@
 // Please do not change this file!
 interface CssExports {
   button: string;
-  darkStyle: string;
-  icon: string;
-  input: string;
-  lightStyle: string;
-  text: string;
-  tooltip: string;
-  tooltipCenter: string;
-  tooltipLeft: string;
-  tooltipRight: string;
 }
 export const cssExports: CssExports;
 export default cssExports;

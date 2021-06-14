@@ -3,122 +3,92 @@
 ////////////////////////////////////////////////////////////////
 
 // Show UI
-figma.showUI(__html__, { width: 300, height: 600 });
+figma.showUI(__html__, { width: 260, height: 300 });
 
 ////////////////////////////////////////////////////////////////
 ///////////////////////// ON MESSAGE ///////////////////////////
 ////////////////////////////////////////////////////////////////
 
-const selection = figma.currentPage.selection;
-const variantsJSON = [];
+const clearSelection = selection =>
+  (selection as Array<any>).filter(
+    c => c.masterComponent?.parent.type === "COMPONENT_SET"
+  );
 
-const variants = [
-  ...new Set(
-    selection.map(item => {
-      return item.masterComponent.parent;
-    })
-  )
-];
+const init = () => {
+  const selection = clearSelection(figma.currentPage.selection);
+  const variantsJSON = [];
 
-variants.forEach(item => {
-  variantsJSON.push({
-    component: { name: item.name, id: item.id },
-    variants: item.children[0].name
-      .split(", ")
-      .map(name => name.substr(0, name.indexOf("="))),
-    children: item.children.map(c => ({
-      name: c.name,
-      variants: c.name.split(", "),
-      id: c.id
-    }))
+  const variants = [
+    ...new Set(
+      selection.map((item: InstanceNode) => {
+        return item.masterComponent.parent;
+      })
+    )
+  ];
+
+  variants.forEach((item: InstanceNode) => {
+    variantsJSON.push({
+      component: { name: item.name, id: item.id },
+      variants: item.children[0].name
+        .split(", ")
+        .map(name => name.substr(0, name.indexOf("="))),
+      selectedVariants: [],
+      children: item.children.map(c => ({
+        name: c.name,
+        variants: c.name.split(", "),
+        id: c.id
+      }))
+    } as variantsObj);
   });
-});
 
-// console.log(variantsJSON);
+  figma.ui.postMessage({
+    type: "variants",
+    data: variantsJSON
+  });
 
-figma.ui.postMessage({
-  type: "variants",
-  data: variantsJSON
-});
+  figma.ui.onmessage = async msg => {
+    if (msg.type === "what-to-random") {
+      selection.forEach((item: InstanceNode) => {
+        let data = msg.data;
+        let itemVariants = item.mainComponent.name.split(", ");
 
-function arr_diff(a1, a2) {
-  var a = [],
-    diff = [];
+        data.map(x => {
+          if (x.component.id === item.masterComponent.parent.id) {
+            let ar = itemVariants.map(y => {
+              return x.selectedVariants.map(z => {
+                if (y.includes(z)) {
+                  return y;
+                }
+              });
+            });
 
-  for (var i = 0; i < a1.length; i++) {
-    a[a1[i]] = true;
-  }
+            let far = ar.flat().filter(Boolean);
 
-  for (var i = 0; i < a2.length; i++) {
-    if (a[a2[i]]) {
-      delete a[a2[i]];
-    } else {
-      a[a2[i]] = true;
-    }
-  }
+            let vfar = item.masterComponent.parent.children.filter(c => {
+              let difference = c.name.split(", ").filter(x => far.includes(x));
 
-  for (var k in a) {
-    diff.push(k);
-  }
-
-  return diff;
-}
-
-figma.ui.onmessage = async msg => {
-  if (msg.type === "what-to-random") {
-    let selection = figma.currentPage.selection;
-
-    // console.log(arr.variants);
-
-    selection.forEach(item => {
-      // console.log(
-      //   item.mainComponent.name
-      //     .split(", ")
-      //     .filter(x => x.includes(data.variants))
-      // );
-      let data = msg.data;
-
-      let itemVariants = item.mainComponent.name.split(", ");
-
-      data.map(x => {
-        if (x.component.id === item.masterComponent.parent.id) {
-          let ar = itemVariants.map(y => {
-            return x.variants.map(z => {
-              if (y.includes(z)) {
-                return y;
+              if (difference.length === far.length) {
+                // console.log(c.name);
+                return c;
               }
             });
-          });
 
-          let far = ar.flat().filter(Boolean);
+            // console.log(vfar);
 
-          // console.log(far);
+            let randomElement = vfar[
+              Math.floor(Math.random() * vfar.length)
+            ] as ComponentNode;
 
-          // const componentVariants = item.masterComponent.parent.children.filter(c => c)
-
-          let vfar = item.masterComponent.parent.children.filter(c => {
-            let difference = c.name.split(", ").filter(x => far.includes(x));
-            // console.log(difference);
-            if (difference.length === far.length) {
-              console.log(c.name);
-              return c;
-            }
-            // console.log(difference);
-          });
-
-          // console.log(vfar);
-
-          let randomElement = vfar[Math.floor(Math.random() * vfar.length)];
-
-          item.swapComponent(randomElement);
-          // console.log(fca);
-        }
+            item.swapComponent(randomElement);
+          }
+        });
       });
-
-      // console.log(,item.masterComponent.parent.id);
-      // itemVariants.map(x => {
-
-      // })
-    });
-  }
+    }
+  };
 };
+
+init();
+
+figma.on("selectionchange", () => {
+  init();
+});
