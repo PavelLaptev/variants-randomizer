@@ -3,7 +3,11 @@
 ////////////////////////////////////////////////////////////////
 
 // Show UI
-figma.showUI(__html__, { width: 260, height: 300 });
+let uiSize = {
+  width: 260,
+  height: 300
+};
+figma.showUI(__html__, { width: uiSize.width, height: uiSize.height });
 
 ////////////////////////////////////////////////////////////////
 ///////////////////////// ON MESSAGE ///////////////////////////
@@ -83,6 +87,10 @@ const init = () => {
           }
         });
       });
+    }
+
+    if (msg.type === "resize") {
+      figma.ui.resize(uiSize.width, msg.size);
     }
   };
 };

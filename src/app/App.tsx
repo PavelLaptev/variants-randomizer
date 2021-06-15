@@ -2,6 +2,7 @@ import * as React from "react";
 import Toggler from "./components/Toggler";
 import Divider from "./components/Divider";
 import Button from "./components/Button";
+import Resizer from "./components/Resizer";
 import styles from "./app.module.scss";
 
 import svgLogo from "./assets/logo.svg";
@@ -71,7 +72,6 @@ const App = ({}) => {
   //////////////////////////////////////////////
   const addVariants = (variants: Array<variantsObj>) => {
     return variants.map((item, i) => {
-      // console.log(i);
       return (
         <div
           ref={containerRef}
@@ -103,6 +103,7 @@ const App = ({}) => {
 
   return (
     <section className={styles.app}>
+      <Resizer />
       {variants.length > 0 ? (
         <>
           <div>
