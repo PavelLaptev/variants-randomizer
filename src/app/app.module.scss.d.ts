@@ -5,6 +5,7 @@ interface CssExports {
   caption: string;
   emptyState: string;
   emptyState_placeholder: string;
+  operationsWrap: string;
   variant: string;
   variantsWrap: string;
 }

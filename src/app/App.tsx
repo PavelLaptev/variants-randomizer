@@ -13,9 +13,7 @@ import svgLogo from "./assets/logo.svg";
 const App = ({}) => {
   const containerRef = React.useRef(null);
   const [variants, setVariants] = React.useState([] as Array<variantsObj>);
-  const [newVariants, setNewVariants] = React.useState(
-    [] as Array<variantsObj>
-  );
+  const [isNoRepeat, setIsNoRepeat] = React.useState(false);
 
   //////////////////////////////////////////////
   ////////////////// HANDLERS //////////////////
@@ -25,7 +23,8 @@ const App = ({}) => {
       {
         pluginMessage: {
           type: "what-to-random",
-          data: newVariants
+          data: variants,
+          isNoRepeat: isNoRepeat
         }
       },
       "*"
@@ -51,8 +50,6 @@ const App = ({}) => {
         }
       });
     }
-
-    setNewVariants(variantsClone);
   };
 
   //////////////////////////////////////////////
@@ -62,10 +59,9 @@ const App = ({}) => {
     onmessage = event => {
       if (event.data.pluginMessage.type === "variants") {
         setVariants(event.data.pluginMessage.data);
-        setNewVariants(event.data.pluginMessage.data);
       }
     };
-  }, [variants, newVariants]);
+  }, [variants]);
 
   //////////////////////////////////////////////
   //////////// COMPONENT FUNCTIONS /////////////
@@ -108,12 +104,24 @@ const App = ({}) => {
         <>
           <div>
             <p className={styles.caption}>
-              Unselect variants that you don't want to randomize 👇
+              Unselect variant properties you don't want to randomize 👇
             </p>
             <div className={styles.variantsWrap}>{addVariants(variants)}</div>
           </div>
 
-          <Button onClick={sendNewVariants} label="Randomize!" />
+          <div className={styles.operationsWrap}>
+            <Divider />
+            <Toggler
+              checked={isNoRepeat}
+              togglerKey={"no-repeat"}
+              name={"Do not repeat variants"}
+              style={{ marginBottom: "16px" }}
+              onChange={e => {
+                setIsNoRepeat(e.target.checked);
+              }}
+            />
+            <Button onClick={sendNewVariants} label="Randomize!" />
+          </div>
         </>
       ) : (
         <section className={styles.emptyState}>

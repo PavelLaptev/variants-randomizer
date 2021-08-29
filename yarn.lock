@@ -23,11 +23,6 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@figma/plugin-typings@^1.23.0":
-  version "1.23.0"
-  resolved "https://registry.yarnpkg.com/@figma/plugin-typings/-/plugin-typings-1.23.0.tgz#e82774264d2f72604856562cd7b021bd32e60852"
-  integrity sha512-hKSQSyE4Lwb9GI0sL92YX8QvBAwsCkKGSIxLkEn3CDLSTtOjtTs/GKsQ8zUAFtcrr0KQLEYW0rBkGU3UVpPq/Q==
-
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.4.tgz#d4b3549a5db5de2683e0c1071ab4f140904bbf69"
@@ -4925,11 +4920,6 @@ vm-browserify@^1.0.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
-
-warpjs@^1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/warpjs/-/warpjs-1.0.8.tgz#61af080a5aa521e31fb50b1967d944067ce14910"
-  integrity sha512-WBlSYafy87MFhH3azS0mN10novFhwXFjOXT397wNtJaGMUIKwv0NRyOIuEA0VvAIWViUi+kgeEVc4wCMb6K8ig==
 
 watchpack-chokidar2@^2.0.1:
   version "2.0.1"

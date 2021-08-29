@@ -5,6 +5,7 @@ interface Props {
   togglerKey: string;
   name: string;
   checked: boolean;
+  style?: React.CSSProperties;
   onChange: (e: any) => void;
 }
 
@@ -17,7 +18,7 @@ const Toggler: React.FC<Props> = props => {
   };
 
   return (
-    <div className={styles.wrap}>
+    <div className={styles.wrap} style={{ ...props.style }}>
       <label className={styles.label} htmlFor={props.togglerKey}>
         {props.name}
       </label>
@@ -31,6 +32,10 @@ const Toggler: React.FC<Props> = props => {
       </div>
     </div>
   );
+};
+
+Toggler.defaultProps = {
+  style: {}
 };
 
 export default Toggler;
