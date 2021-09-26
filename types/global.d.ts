@@ -1,6 +1,6 @@
 interface variantsObj {
   component: { name: string; id: string };
-  variants: Array<string>;
+  variants: object;
   selectedVariants: Array<string>;
   children: Array<object>;
 }

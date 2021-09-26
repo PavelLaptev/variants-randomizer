@@ -15,56 +15,69 @@ figma.showUI(__html__, { width: uiSize.width, height: uiSize.height });
 ///////////////////////// ON MESSAGE ///////////////////////////
 ////////////////////////////////////////////////////////////////
 
-const clearSelection = selection =>
-  (selection as Array<any>).filter(
-    c => c.masterComponent?.parent.type === "COMPONENT_SET"
+const init = () => {
+  const checkForVariants = (nodes: any) => {
+    return nodes
+      .map(node => {
+        if (node.variantProperties) {
+          return node;
+        }
+        if (node.type === "FRAME" || node.type === "GROUP") {
+          return checkForVariants(node.children);
+        }
+      })
+      .flat(Infinity)
+      .filter(Boolean);
+  };
+
+  const selection = figma.currentPage.selection;
+  const selectedVariants = checkForVariants(selection);
+
+  const reducedVariants = selectedVariants.reduce(
+    (r, i) =>
+      !r.some(
+        j =>
+          JSON.stringify(i.masterComponent.parent.id) ===
+          JSON.stringify(j.masterComponent.parent.id)
+      )
+        ? [...r, i]
+        : r,
+    []
   );
 
-const init = () => {
-  const selection = clearSelection(figma.currentPage.selection);
-  const variantsJSON = [];
-
-  const groupedSelection = selection.reduce((r, a) => {
+  const groupedVariants = (selectedVariants as any).reduce((r, a) => {
     r[a.masterComponent.parent.id] = r[a.masterComponent.parent.id] || [];
     r[a.masterComponent.parent.id].push(a);
     return r;
   }, {});
 
-  const variants = [
-    ...new Set(
-      selection.map((item: InstanceNode) => {
-        return item.masterComponent.parent;
-      })
-    )
-  ];
+  const variantsObj = reducedVariants.map((variantInstance: InstanceNode) => {
+    let master = variantInstance.masterComponent.parent as ComponentSetNode;
 
-  // console.log(variants);
-
-  variants.forEach((item: InstanceNode) => {
-    variantsJSON.push({
-      component: { name: item.name, id: item.id },
-      variants: item.children[0].name
-        .split(", ")
-        .map(name => name.substr(0, name.indexOf("="))),
+    let obj = {
+      component: { name: master.name, id: master.id },
+      variants: master.variantGroupProperties,
       selectedVariants: [],
-      children: item.children.map(c => ({
+      children: master.children.map((c: InstanceNode) => ({
+        id: c.id,
         name: c.name,
-        variants: c.name.split(", "),
-        id: c.id
+        variants: c.variantProperties
       }))
-    } as variantsObj);
+    } as variantsObj;
+
+    return obj;
   });
 
   figma.ui.postMessage({
     type: "variants",
-    data: variantsJSON
+    data: variantsObj
   });
 
   figma.ui.onmessage = async msg => {
-    if (msg.type === "what-to-random") {
+    if (msg.type === "random-selected") {
       let data = msg.data;
 
-      Object.values(groupedSelection).forEach(
+      Object.values(groupedVariants).forEach(
         (instanceGroup: Array<InstanceNode>) => {
           let controlledGroupVariants = null;
 

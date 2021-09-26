@@ -22,7 +22,7 @@ const App = ({}) => {
     parent.postMessage(
       {
         pluginMessage: {
-          type: "what-to-random",
+          type: "random-selected",
           data: variants,
           isNoRepeat: isNoRepeat
         }
@@ -68,6 +68,7 @@ const App = ({}) => {
   //////////////////////////////////////////////
   const addVariants = (variants: Array<variantsObj>) => {
     return variants.map((item, i) => {
+      // console.log(item);
       return (
         <div
           ref={containerRef}
@@ -76,7 +77,7 @@ const App = ({}) => {
         >
           <Divider />
           <h3>{item.component.name}</h3>
-          {item.variants.map((variant, j) => {
+          {Object.keys(item.variants).map((variant, j) => {
             let variantKey = `variant-${i}-${j}`;
             return (
               <Toggler
